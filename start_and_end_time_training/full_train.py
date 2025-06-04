@@ -15,10 +15,10 @@ from driving_dataset import DrivingActionDataset
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 BATCH_SIZE_FULL = 8
-EPOCHS_FULL = 50      # Daha yüksek epoch sayısı, early stopping devrede
+EPOCHS_FULL = 20
 LR_FULL = 1e-4
-NUM_WORKERS_FULL = 4
-PATIENCE = 5          # Eğer val kaybı / val doğruluğu iyileşmezse kaç epoch bekler
+NUM_WORKERS_FULL = 8
+PATIENCE = 5
 
 def filter_unreadable_records(records):
     good = []
@@ -83,10 +83,13 @@ def validate_one_epoch(model, dataloader, criterion, device):
 if __name__ == "__main__":
     if torch.cuda.is_available():
         device = torch.device("cuda")
+        print("CUDA GPU kullanılacak.")
     elif torch.backends.mps.is_available():
         device = torch.device("mps")
+        print("MPS (Mac GPU) kullanılacak.")
     else:
         device = torch.device("cpu")
+        print("CPU kullanılacak.")
 
     pattern = os.path.join(PROJECT_ROOT, "records_A1_*.pkl")
     pkl_files = sorted(glob.glob(pattern))
@@ -126,8 +129,7 @@ if __name__ == "__main__":
     optimizer = optim.AdamW(model.parameters(), lr=LR_FULL, weight_decay=1e-5)
 
     best_val_acc = 0.0
-    epochs_no_improve = 0
-    checkpoint_full = os.path.join(PROJECT_ROOT, "checkpoint_full.pth")
+    checkpoint_full = os.path.join(PROJECT_ROOT, "final_best_model_checkpoint_with_end_time.pth")
 
     for epoch in range(1, EPOCHS_FULL + 1):
         print(f"\nEpoch {epoch}/{EPOCHS_FULL}")
@@ -149,5 +151,7 @@ if __name__ == "__main__":
             print(f"\n>>> Early stopping tetiklendi. {PATIENCE} epoch boyunca iyileşme olmadı.")
             break
 
-    print(f"\n>>> Eğitim tamamlandı. En iyi val doğruluğu: {best_val_acc:.4f}")
+
+    print(f"\n>>> Tam ölçekli eğitim tamamlandı.")
+    print(f">>> En iyi val doğruluğu: {best_val_acc:.4f}")
     print(f">>> Final modeli: {checkpoint_full}")

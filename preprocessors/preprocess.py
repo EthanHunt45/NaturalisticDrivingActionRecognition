@@ -4,11 +4,11 @@ import pickle
 import pandas as pd
 
 
-PROJECT_ROOT = "/Users/erinc/GitHub/NaturalisticDrivingActionRecognition"
+PROJECT_ROOT = r"C:\Users\erinc\Desktop\NaturalisticDrivingActionRecognition"
 
-DATA_ROOT = os.path.expanduser("/Users/erinc/Desktop/Computer Vision Dataset")
+DATA_ROOT = os.path.expanduser(r"C:\Users\erinc\Desktop\Computer Vision Dataset")
 
-FOLDER = "A1_1"
+FOLDER = "A1_7"
 
 EXT = ".mp4"
 # -----------------------------------------------------
